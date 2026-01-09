@@ -52,10 +52,10 @@ export function CustomConnectButton() {
               }
 
               return (
-                <PixelButton variant="primary" onClick={openAccountModal} type="button">
-                  {account.displayName}
-                  {account.displayBalance ? ` (${account.displayBalance})` : ""}
-                </PixelButton>
+                  <PixelButton variant="primary" onClick={openAccountModal} type="button">
+                    {account.displayName}
+                    {account.displayBalance ? ` (${account.displayBalance})` : ""}
+                  </PixelButton>
               )
             })()}
           </div>

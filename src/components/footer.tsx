@@ -93,7 +93,7 @@ export function Footer() {
         <div className="border-t-2 border-[#2d1b4e] pt-3 sm:pt-6">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-4">
             <p className="text-muted text-[10px] sm:text-xs text-center sm:text-left">
-              © 2025 c0gito. All rights reserved.
+              © 2026 c0gito. All rights reserved.
             </p>
             <div className="flex items-center gap-2 sm:gap-4">
               <span className="text-muted text-[10px] sm:text-xs">TESTNET</span>

@@ -17,6 +17,25 @@ interface DepositDialogProps {
 
 const INGRESS_ADDRESS = (process.env.NEXT_PUBLIC_INGRESS_ADDRESS || process.env.INGRESS_ADDRESS)
 
+const DEPOSIT_TOAST_ID = "deposit-status"
+
+function showDepositToast(type: "success" | "error", message: string) {
+  // Always replace previous deposit toast so only one is visible
+  toast.dismiss(DEPOSIT_TOAST_ID)
+
+  const commonOptions = {
+    id: DEPOSIT_TOAST_ID,
+    duration: 8000,
+    dismissible: true,
+  } as const
+
+  if (type === "success") {
+    toast.success(message, commonOptions)
+  } else {
+    toast.error(message, commonOptions)
+  }
+}
+
 export function DepositDialog({ open, onClose, onDepositSuccess }: DepositDialogProps) {
   const { address, isConnected } = useAccount()
   const [amount, setAmount] = useState("")
@@ -32,7 +51,7 @@ export function DepositDialog({ open, onClose, onDepositSuccess }: DepositDialog
   // Handle success
   useEffect(() => {
     if (isSuccess && hash) {
-      toast.success("Deposit successful!")
+      showDepositToast("success", "Deposit successful!")
       // TODO: Extract depositId from transaction receipt events
       // For now, user needs to check transaction manually
       onClose()
@@ -42,24 +61,24 @@ export function DepositDialog({ open, onClose, onDepositSuccess }: DepositDialog
   // Handle error
   useEffect(() => {
     if (error) {
-      toast.error(error.message || "Deposit failed")
+      showDepositToast("error", error.message || "Deposit failed")
     }
   }, [error])
 
   const handleDeposit = async () => {
     if (!isConnected) {
-      toast.error("Please connect your wallet")
+      showDepositToast("error", "Please connect your wallet")
       return
     }
     if (!amount || parseFloat(amount) <= 0) {
-      toast.error("Please enter a valid amount")
+      showDepositToast("error", "Please enter a valid amount")
       return
     }
 
     try {
       await deposit(amount)
     } catch (err: any) {
-      toast.error(err?.message || "Failed to deposit")
+      showDepositToast("error", err?.message || "Failed to deposit")
     }
   }
 

@@ -12,7 +12,6 @@ import { DepositSelector } from "@/components/deposit-selector"
 import { FloatingParticles } from "@/components/floating-particles"
 import { useDepositNative, useInitiateTransfer } from "@/hooks/usePrivateTransfer"
 import { formatBalance, formatBalanceDisplay } from "@/lib/format"
-import { toast } from "sonner"
 
 const INGRESS_ADDRESS = (process.env.NEXT_PUBLIC_INGRESS_ADDRESS || process.env.INGRESS_ADDRESS) as Address
 const PONDER_GRAPHQL_URL = process.env.NEXT_PUBLIC_PONDER_GRAPHQL_URL || "http://localhost:42069/graphql"
@@ -68,7 +67,7 @@ export default function TransferPage() {
   useEffect(() => {
     if (isDepositSuccess) {
       // Deposit selector will auto-refresh
-      toast.success("Deposit successful! Select it from the dropdown.")
+      // No toast here to avoid noisy UX
     }
   }, [isDepositSuccess])
 
@@ -165,19 +164,19 @@ export default function TransferPage() {
 
   const handleTransfer = async () => {
     if (!isConnected) {
-      toast.error("Please connect your wallet")
+      // Wallet not connected; rely on disabled button + connect UI
       return
     }
     if (!recipient || !isAddress(recipient)) {
-      toast.error("Please enter a valid recipient address")
+      // Invalid recipient; rely on form validation UX
       return
     }
     if (!amount || parseFloat(amount) <= 0) {
-      toast.error("Please enter a valid amount")
+      // Invalid amount; rely on form validation UX
       return
     }
     if (!depositId) {
-      toast.error("Please deposit funds first or enter a deposit ID")
+      // No deposit selected; rely on disabled state
       return
     }
 

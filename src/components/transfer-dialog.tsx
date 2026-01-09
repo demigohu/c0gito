@@ -23,6 +23,32 @@ interface TransferDialogProps {
 
 const MANTLE_EXPLORER = "https://sepolia.mantlescan.xyz/tx"
 
+function getFriendlyErrorMessage(error: Error | null): string {
+  if (!error) return "Something went wrong while sending your transfer."
+
+  const msg = error.message || ""
+
+  if (/user rejected|user denied|rejected the request|Request rejected/i.test(msg)) {
+    return "Transaction was cancelled in your wallet."
+  }
+
+  if (/insufficient funds|insufficient balance/i.test(msg)) {
+    return "Insufficient balance to complete this transfer."
+  }
+
+  if (/execution reverted/i.test(msg)) {
+    return "The transaction was reverted by the contract. Please check your inputs and try again."
+  }
+
+  // Fallback: truncate very long messages so they don't fill the whole screen
+  const cleaned = msg.replace(/\s+/g, " ").trim()
+  if (cleaned.length > 220) {
+    return cleaned.slice(0, 200) + "..."
+  }
+
+  return cleaned || "Unknown error occurred."
+}
+
 export function TransferDialog({
   open,
   onClose,
@@ -153,13 +179,17 @@ export function TransferDialog({
             )}
 
             {status === "failed" && (
-              <div className="flex items-center gap-2 sm:gap-3">
-                <div className="w-3 h-3 sm:w-4 sm:h-4 bg-destructive flex items-center justify-center flex-shrink-0">
+              <div className="flex items-start gap-2 sm:gap-3">
+                <div className="w-3 h-3 sm:w-4 sm:h-4 bg-destructive flex items-center justify-center flex-shrink-0 mt-0.5">
                   <span className="text-background text-[8px] sm:text-xs">✕</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-destructive text-[10px] sm:text-xs font-bold">TRANSFER FAILED</div>
-                  <div className="text-muted text-[10px] sm:text-xs mt-0.5 sm:mt-1 break-words">{error?.message || "Unknown error occurred"}</div>
+                  <div className="text-destructive text-[10px] sm:text-xs font-bold mb-0.5 sm:mb-1">
+                    TRANSFER FAILED
+                  </div>
+                  <div className="text-muted text-[10px] sm:text-xs leading-relaxed max-h-24 sm:max-h-32 overflow-y-auto pr-1 sm:pr-2 scrollbar-hide">
+                    {getFriendlyErrorMessage(error)}
+                  </div>
                 </div>
               </div>
             )}

@@ -34,6 +34,11 @@ export function Navbar() {
                 <PixelButton variant="secondary" className="text-[8px] sm:text-xs px-2 sm:px-3 py-1 sm:py-2">TRANSFER</PixelButton>
               </Link>
             )}
+            {/* {pathname === "/" && (
+              <a href="#faq">
+                <PixelButton variant="secondary" className="text-[8px] sm:text-xs px-2 sm:px-3 py-1 sm:py-2">FAQ</PixelButton>
+              </a>
+            )} */}
             <CustomConnectButton />
           </div>
         </div>
