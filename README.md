@@ -118,12 +118,6 @@ flowchart TD
 - **Native MNT** transfers (ERC20 support in contracts, frontend coming soon)
 - **Flexible deposits** - one deposit can fund multiple transfers
 
-### 📊 Developer Experience
-- **Ponder indexer** for real-time data
-- **GraphQL API** for easy integration
-- **Type-safe contracts** with TypeScript
-- **Comprehensive event tracking**
-
 ### 🎨 User Experience
 - **Intuitive UI** with pixelated retro-futuristic design
 - **Real-time status** updates
@@ -141,7 +135,7 @@ flowchart TD
 - **Oasis Sapphire** Contracts for confidential computing
 
 ### Frontend
-- **Next.js** 16.1.1 (React 19)
+- **Next.js** 16.1.1
 - **Wagmi** & **RainbowKit** for wallet integration
 - **Viem** for Ethereum interactions
 - **Tailwind CSS** for styling
@@ -160,14 +154,54 @@ flowchart TD
 
 ## 🚀 Getting Started
 
+This section will guide you through setting up and running c0gito locally or using the deployed contracts.
+
 ### Prerequisites
 
-- Node.js 18+ and npm/yarn
-- MetaMask or compatible Web3 wallet
-- Mantle Sepolia testnet MNT
-- Access to Oasis Sapphire Testnet
+- **Node.js** 18+ and npm/yarn
+- **MetaMask** or compatible Web3 wallet
+- **Mantle Sepolia testnet MNT** (for gas fees)
+- **Access to Oasis Sapphire Testnet** (for testing)
 
-### Installation
+### Quick Start (Using Deployed Contracts)
+
+If you want to quickly test the application without deploying contracts:
+
+1. **Clone and install**
+```bash
+git clone https://github.com/yourusername/c0gito.git
+cd c0gito
+npm install
+```
+
+2. **Configure environment** (use deployed addresses from [Deployed Contracts](#-deployed-contracts))
+```bash
+# Mantle Sepolia
+INGRESS_ADDRESS=0xEE5F31d28F08a011f638fd2b82CCbcb5ce04ab48
+ROUTER_ADDRESS=0xEE5F31d28F08a011f638fd2b82CCbcb5ce04ab48
+ISM_ADDRESS=0xDfA1f3F3865a24ddD7B0A5d89ac4D80c75AD2Bc8
+TRUSTED_RELAYER=0x8193A12e9dc9371b231863CE2D7fd46E405E5e16
+
+# Oasis Sapphire Testnet
+VAULT_ADDRESS=0x418A949474971a1947d932f856FB3eAA695BDdE5
+VAULT_PUBLIC_KEY=0x7e9bbbb5d644e0afacb4da4633a9dbd433febe9190edbf5c6604306be96f182d
+```
+
+3. **Start services**
+```bash
+# Terminal 1: Frontend
+npm run dev
+
+# Terminal 2: Indexer
+cd c0gito-indexer && npm install && npm run dev
+
+# Terminal 3: Service (optional)
+cd c0gito-service && npm install && npm run dev
+```
+
+4. **Open** [http://localhost:3000](http://localhost:3000)
+
+### Full Installation
 
 1. **Clone the repository**
 ```bash
@@ -177,34 +211,27 @@ cd c0gito
 
 2. **Install dependencies**
 ```bash
+# Root dependencies
 npm install
+
+# Indexer dependencies
+cd c0gito-indexer && npm install && npm run dev
+
+# Service dependencies
+cd c0gito-service && npm install && npm run dev
 ```
 
 3. **Set up environment variables**
 
-Create `.env.local` in the root directory:
-```env
-# Mantle Sepolia
-NEXT_PUBLIC_INGRESS_ADDRESS=0x...
-NEXT_PUBLIC_ROUTER_ADDRESS=0x...
-NEXT_PUBLIC_ISM_ADDRESS=0x...
-
-# Oasis Sapphire
-NEXT_PUBLIC_VAULT_ADDRESS=0x...
-NEXT_PUBLIC_VAULT_PUBLIC_KEY=0x...
-
-# Ponder Indexer
-NEXT_PUBLIC_PONDER_GRAPHQL_URL=http://localhost:42069/graphql
-```
-
 ### Environment Variables Examples
 
-**Frontend (`.env.local`):**
+**Frontend (`.env`):**
 ```env
 # Mantle Sepolia Contracts
 NEXT_PUBLIC_INGRESS_ADDRESS=0xEE5F31d28F08a011f638fd2b82CCbcb5ce04ab48
 NEXT_PUBLIC_ROUTER_ADDRESS=0xEE5F31d28F08a011f638fd2b82CCbcb5ce04ab48
 NEXT_PUBLIC_ISM_ADDRESS=0xDfA1f3F3865a24ddD7B0A5d89ac4D80c75AD2Bc8
+NEXT_PUBLIC_TRUSTED_RELAYER=0x8193A12e9dc9371b231863CE2D7fd46E405E5e16
 
 # Oasis Sapphire Contracts
 NEXT_PUBLIC_VAULT_ADDRESS=0x418A949474971a1947d932f856FB3eAA695BDdE5
@@ -212,6 +239,16 @@ NEXT_PUBLIC_VAULT_PUBLIC_KEY=0x7e9bbbb5d644e0afacb4da4633a9dbd433febe9190edbf5c6
 
 # Ponder Indexer
 NEXT_PUBLIC_PONDER_GRAPHQL_URL=http://localhost:42069/graphql
+
+# Wallet Connect ID
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=<YOURS>
+
+# Additional
+MANTLE_MAILBOX=0xE495652b291B836334465680156Ce50a100aF52f
+SAPPHIRE_MAILBOX=0x79d3ECb26619B968A68CE9337DfE016aeA471435
+MANTLE_DOMAIN=5003
+SAPPHIRE_DOMAIN=23295
+
 ```
 
 **Indexer (`c0gito-indexer/.env`):**
@@ -256,7 +293,36 @@ npm run dev
 
 ### Contract Deployment
 
-See detailed deployment instructions in [`scripts/deploy/README.md`](scripts/deploy/README.md)
+#### Quick Deployment (Using Deployed Contracts)
+
+If you want to use the already deployed contracts, simply configure your environment variables with the addresses below (see [Deployed Contracts](#-deployed-contracts)).
+
+#### Full Deployment Guide
+
+For deploying your own contracts, see the detailed guide in [`scripts/deploy/README.md`](scripts/deploy/README.md).
+
+**Quick Steps:**
+1. Deploy `TrustedRelayerIsm` on Mantle Sepolia
+2. Deploy `PrivateTransferIngress` on Mantle Sepolia
+3. Deploy `PrivateTransferVault` on Oasis Sapphire Testnet
+4. Enroll contracts with Hyperlane
+5. Configure frontend with contract addresses
+
+**Deployment Commands:**
+```bash
+# Deploy ISM
+npx hardhat run scripts/deploy/deployISM.ts --network mantleSepolia
+
+# Deploy Ingress
+npx hardhat run scripts/deploy/deployIngress.ts --network mantleSepolia
+
+# Deploy Vault
+npx hardhat run scripts/deploy/deployVault.ts --network sapphireTestnet
+
+# Enroll with Hyperlane
+npx hardhat run scripts/enroll/enrollIngress.ts --network mantleSepolia
+npx hardhat run scripts/enroll/enrollVault.ts --network sapphireTestnet
+```
 
 ---
 
@@ -289,6 +355,42 @@ See detailed deployment instructions in [`scripts/deploy/README.md`](scripts/dep
 
 ---
 
+## 🧪 Testing
+
+### Running Contract Tests
+
+The project includes comprehensive unit tests for smart contracts using Hardhat v2.
+
+```bash
+# Run all tests
+npx hardhat test
+
+# Run with coverage
+npx hardhat coverage
+
+# Run specific test file
+npx hardhat test test/PrivateTransferIngress.test.ts
+```
+
+### Test Coverage
+
+- ✅ **PrivateTransferIngress**: 17 test cases covering deposits, transfers, mappings, and edge cases
+- ✅ **TrustedRelayerIsm**: Constructor validation and verification logic
+
+**Test Results:**
+```
+✓ 17 passing (713ms)
+```
+
+### Test Files
+
+- `test/PrivateTransferIngress.test.ts` - Main ingress contract tests
+- `test/TrustedRelayerIsm.test.ts` - ISM verification tests
+- `contracts/test/MockMailbox.sol` - Mock Hyperlane Mailbox for testing
+- `contracts/test/MockERC20.sol` - Mock ERC20 token for testing
+
+---
+
 ---
 
 ## 📁 Project Structure
@@ -316,58 +418,27 @@ c0gito/
 
 ---
 
-## 🎯 Hackathon Alignment
-
-### Track: **ZK & Privacy** 🏆
-
-c0gito directly addresses the **ZK & Privacy** track requirements:
-
-✅ **Privacy-preserving solutions** with regulatory compatibility  
-✅ **Selective disclosure** - only encrypted hashes on public chain  
-✅ **Confidential computation** using Oasis Sapphire TEE  
-✅ **Regulatory-friendly** - no illegal activity, just privacy
-
-### Additional Track Relevance
-
-- **Infrastructure & Tooling**: Ponder indexer, GraphQL API, developer SDKs
-- **DeFi & Composability**: Composable with other Mantle DeFi protocols
-
-### Mantle Integration
-
+## Mantle Integration
 - ✅ Built on **Mantle Sepolia** testnet
 - ✅ Leverages **Mantle's low fees** for cost-effective transfers
 - ✅ Uses **Mantle's EVM compatibility** for seamless development
 - ✅ Integrates with **Mantle ecosystem** tools
+- ✅ **Hyperlane integration** for cross-chain messaging
+- ✅ **Mantle Explorer** integration for transaction tracking
 
 ---
 
 ## 🗺️ Roadmap
 
-### Phase 1: MVP (Current) ✅
-- [x] Core smart contracts
-- [x] Cross-chain messaging via Hyperlane
-- [x] Confidential decryption on Sapphire
-- [x] Frontend interface
-- [x] Ponder indexer
-- [x] Service automation
+**Q1 2026** – ERC20 token support with whitelist management; batch transfer functionality for multiple recipients; gas optimization improvements.
 
-### Phase 2: Enhancement (Q1 2026)
-- [ ] Multi-token support (ERC20 whitelist)
-- [ ] Batch transfers
-- [ ] Gas optimization
-- [ ] Mobile app
+**Q2 2026** – Mainnet deployment on Mantle; comprehensive security audit; governance token launch & DAO structure for protocol decisions.
 
-### Phase 3: Production (Q2 2026)
-- [ ] Mainnet deployment
-- [ ] Security audit
-- [ ] Governance token
-- [ ] DAO structure
+**Q3 2026** – Mobile app with WalletConnect integration; additional chain support (Arbitrum, Optimism); advanced privacy features (stealth addresses, optional memo encryption).
 
-### Phase 4: Expansion (Q3 2026)
-- [ ] Additional chain support
-- [ ] Advanced privacy features
-- [ ] Enterprise solutions
-- [ ] API marketplace
+**Q4 2026** – Enterprise API marketplace for B2B integrations; analytics dashboard with transfer insights; protocol partnerships & integrations.
+
+**Always-on** – Monitoring & observability (Ponder → Grafana dashboards); Sapphire TEE health checks; automated service layer with retry mechanisms; community support & documentation updates.
 
 ---
 
@@ -381,69 +452,82 @@ c0gito directly addresses the **ZK & Privacy** track requirements:
 
 ### Compliance Declaration
 
-**This project does NOT involve regulated assets.**  
+**⚖️ COMPLIANCE DECLARATION**
+
+**This project does NOT involve regulated assets.**
+
 c0gito is a privacy-preserving transfer protocol that:
-- Does not handle securities or regulated financial instruments
-- Does not require KYC/AML for basic transfers
-- Operates as a technical infrastructure layer
-- Complies with applicable blockchain regulations
+- ✅ **Does NOT handle securities** or regulated financial instruments
+- ✅ **Does NOT require KYC/AML** for basic transfers
+- ✅ **Operates as a technical infrastructure layer** for private transfers
+- ✅ **Complies with applicable blockchain regulations**
+- ✅ **No illegal activity** - privacy for legitimate use cases only
+
+**Regulatory Status:**
+- c0gito is a protocol for private cryptocurrency transfers
+- It does not issue tokens, securities, or financial instruments
+- It does not provide custodial services
+- Users maintain full control of their funds
+- The protocol is designed to be regulatory-friendly while preserving user privacy
 
 ---
 
 ## 👥 Team
 
-**Team c0gito**
+**Evril Fadrekha Cahyani**
 
-We are a team of blockchain developers passionate about privacy and user sovereignty.
+Solo developer passionate about privacy and user sovereignty. My mission is to bring true privacy to cross-chain transfers while maintaining regulatory compliance and excellent user experience.
 
-- **Contact**: [Your Email]
-- **Twitter**: [@YourTwitter]
-- **GitHub**: [YourGitHub]
+### About
+
+I am a full-stack blockchain developer specializing in:
+- **Smart Contract Development** - Solidity, Hardhat, comprehensive testing
+- **Frontend Development** - Next.js, React, TypeScript, 
+- **Infrastructure & DevOps** - Ponder indexing, GraphQL APIs, service automation
+
+### Contact Information
+
+- **Name**: Evril Fadrekha Cahyani
+- **Email**: [your-email@example.com] (Update with your email)
+- **GitHub**: [YourGitHub] (Update with your GitHub)
 
 ---
 
 ## 📄 License
 
-Apache-2.0
-
----
-
-## 🙏 Acknowledgments
-
-- **Mantle Network** for the excellent L2 infrastructure
-- **Oasis Sapphire** for confidential computing capabilities
-- **Hyperlane** for cross-chain messaging
-- **Ponder** for the indexing framework
-- **OpenZeppelin** for battle-tested contracts
+Copyright c0gito team.
 
 ---
 
 ## 📞 Support & Links
 
-- **Live Demo**: [Your Demo URL]
-- **Documentation**: [Your Docs URL]
-- **Video Demo**: [Your Video URL]
+### Demo & Documentation
 
-### Deployed Contracts
+- **Live Demo**: [Your Demo URL - Add when ready]
+- **Video Demo**: [Your Video URL - 3-5 minutes walkthrough]
+- **Documentation**: This README + [`scripts/deploy/README.md`](scripts/deploy/README.md)
 
-**Mantle Sepolia:**
-- **PrivateTransferIngress**: [`0xEE5F31d28F08a011f638fd2b82CCbcb5ce04ab48`](https://sepolia.mantlescan.xyz/address/0xEE5F31d28F08a011f638fd2b82CCbcb5ce04ab48)
-- **TrustedRelayerIsm**: [`0xDfA1f3F3865a24ddD7B0A5d89ac4D80c75AD2Bc8`](https://sepolia.mantlescan.xyz/address/0xDfA1f3F3865a24ddD7B0A5d89ac4D80c75AD2Bc8)
+## 📦 Deployed Contracts
 
-**Oasis Sapphire Testnet:**
-- **PrivateTransferVault**: [`0x418A949474971a1947d932f856FB3eAA695BDdE5`](https://testnet.explorer.sapphire.oasis.dev/address/0x418A949474971a1947d932f856FB3eAA695BDdE5)
-- **Vault Public Key**: `0x7e9bbbb5d644e0afacb4da4633a9dbd433febe9190edbf5c6604306be96f182d`
+These are the deployed contract addresses used by this project. Configure your environment variables with these addresses to interact with the live deployment.
 
+### Mantle Sepolia
+
+| Contract | Address | Explorer |
+|----------|---------|----------|
+| **PrivateTransferIngress**<br/>(`INGRESS_ADDRESS`, `ROUTER_ADDRESS`) | [`0xEE5F31d28F08a011f638fd2b82CCbcb5ce04ab48`](https://sepolia.mantlescan.xyz/address/0xEE5F31d28F08a011f638fd2b82CCbcb5ce04ab48) | [MantleScan](https://sepolia.mantlescan.xyz/address/0xEE5F31d28F08a011f638fd2b82CCbcb5ce04ab48) |
+| **TrustedRelayerIsm**<br/>(`ISM_ADDRESS`) | [`0xDfA1f3F3865a24ddD7B0A5d89ac4D80c75AD2Bc8`](https://sepolia.mantlescan.xyz/address/0xDfA1f3F3865a24ddD7B0A5d89ac4D80c75AD2Bc8) | [MantleScan](https://sepolia.mantlescan.xyz/address/0xDfA1f3F3865a24ddD7B0A5d89ac4D80c75AD2Bc8) |
+| **Trusted Relayer**<br/>(`TRUSTED_RELAYER`) | `0x8193A12e9dc9371b231863CE2D7fd46E405E5e16` | [MantleScan](https://sepolia.mantlescan.xyz/address/0x8193A12e9dc9371b231863CE2D7fd46E405E5e16) |
+
+### Oasis Sapphire Testnet
+
+| Contract | Address | Explorer |
+|----------|---------|----------|
+| **PrivateTransferVault**<br/>(`VAULT_ADDRESS`) | [`0x418A949474971a1947d932f856FB3eAA695BDdE5`](https://testnet.explorer.sapphire.oasis.dev/address/0x418A949474971a1947d932f856FB3eAA695BDdE5) | [Sapphire Explorer](https://testnet.explorer.sapphire.oasis.dev/address/0x418A949474971a1947d932f856FB3eAA695BDdE5) |
+| **Vault Public Key**<br/>(`VAULT_PUBLIC_KEY`) | `0x7e9bbbb5d644e0afacb4da4633a9dbd433febe9190edbf5c6604306be96f182d` | - |
 ---
 
-## 🏆 Why c0gito Should Win
 
-1. **Technical Excellence**: Novel architecture combining Mantle, Sapphire, and Hyperlane
-2. **Real-World Applicability**: Solves genuine privacy concerns in DeFi
-3. **User Experience**: Intuitive interface with real-time feedback
-4. **Mantle Integration**: Deep integration with Mantle's modular stack
-5. **Long-Term Potential**: Scalable foundation for privacy-preserving DeFi
 
----
 
 **Built with ❤️ for the Mantle Global Hackathon 2025**

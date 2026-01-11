@@ -36,6 +36,10 @@ export type { Initializable } from "./@openzeppelin/contracts-upgradeable/proxy/
 export { Initializable__factory } from "./factories/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable__factory";
 export type { ContextUpgradeable } from "./@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable";
 export { ContextUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable__factory";
+export type { ERC20 } from "./@openzeppelin/contracts/token/ERC20/ERC20";
+export { ERC20__factory } from "./factories/@openzeppelin/contracts/token/ERC20/ERC20__factory";
+export type { IERC20Metadata } from "./@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata";
+export { IERC20Metadata__factory } from "./factories/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata__factory";
 export type { IERC20Permit } from "./@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit";
 export { IERC20Permit__factory } from "./factories/@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit__factory";
 export type { IERC20 } from "./@openzeppelin/contracts/token/ERC20/IERC20";
@@ -44,5 +48,9 @@ export type { PrivateTransferIngress } from "./contracts/PrivateTransferIngress"
 export { PrivateTransferIngress__factory } from "./factories/contracts/PrivateTransferIngress__factory";
 export type { PrivateTransferVault } from "./contracts/PrivateTransferVault";
 export { PrivateTransferVault__factory } from "./factories/contracts/PrivateTransferVault__factory";
+export type { MockERC20 } from "./contracts/test/MockERC20";
+export { MockERC20__factory } from "./factories/contracts/test/MockERC20__factory";
+export type { MockMailbox } from "./contracts/test/MockMailbox";
+export { MockMailbox__factory } from "./factories/contracts/test/MockMailbox__factory";
 export type { TrustedRelayerIsm } from "./contracts/TrustedRelayerIsm";
 export { TrustedRelayerIsm__factory } from "./factories/contracts/TrustedRelayerIsm__factory";
