@@ -506,6 +506,7 @@ Copyright c0gito team.
 
 - **Live Demo**: [Your Demo URL - Add when ready]
 - **Video Demo**: [Your Video URL - 3-5 minutes walkthrough]
+- **One-Pager Pitch**: [`ONE_PAGER_PITCH.md`](ONE_PAGER_PITCH.md) - Problem, solution, business model, roadmap
 - **Documentation**: This README + [`scripts/deploy/README.md`](scripts/deploy/README.md)
 
 ## 📦 Deployed Contracts
